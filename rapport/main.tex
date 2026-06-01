@@ -1,0 +1,74 @@
+\documentclass[11pt,a4paper]{report}
+\input{preambule}
+
+\begin{document}
+
+% ============================ PAGE DE TITRE ============================
+\begin{titlepage}
+\centering
+\vspace*{1.5cm}
+{\Large\scshape Université d'Abomey-Calavi — ENEAM\par}
+{\large Master 2 — Informatique de Gestion / Ingénierie des Données\par}
+\vspace{2.2cm}
+{\color{bleuclair}\rule{\linewidth}{2pt}}\par
+\vspace{0.8cm}
+{\Huge\bfseries\color{bleu} DATA MINING\par}
+\vspace{0.5cm}
+{\LARGE Cours expliqué pas à pas\par}
+\vspace{0.3cm}
+{\large Tous les exemples résolus en détail \textbullet{} scripts Python \textbullet{} projet Streamlit\par}
+\vspace{0.8cm}
+{\color{bleuclair}\rule{\linewidth}{2pt}}\par
+\vspace{2.5cm}
+\begin{tabular}{rl}
+\textbf{Enseignant} & Th. K. DAGBA\\[4pt]
+\textbf{Année} & 2025--2026\\[4pt]
+\textbf{Contenu} & Chap. 1, 2, 4, 5 + TP classification + Projet\\
+\end{tabular}
+\vfill
+{\small Document compilé avec \texttt{tectonic} (XeLaTeX).\par}
+\end{titlepage}
+
+\tableofcontents
+\clearpage
+
+% ============================ INTRODUCTION ============================
+\chapter*{Mode d'emploi de ce document}
+\addcontentsline{toc}{chapter}{Mode d'emploi de ce document}
+
+Ce document reprend \textbf{l'intégralité} du cours de Data Mining et l'explique
+\textbf{de la façon la plus simple possible}. Pour chaque chapitre tu trouveras :
+
+\begin{itemize}[leftmargin=1.4em]
+  \item la \textbf{théorie} reformulée en mots simples, avec des encadrés colorés ;
+  \item \textbf{tous les exemples du cours résolus à la main}, chaque calcul détaillé ;
+  \item le \textbf{script Python équivalent} (commenté ligne à ligne) qui refait le
+        calcul puis le \textbf{vérifie avec scikit-learn} ;
+  \item des \textbf{figures} générées par ces scripts.
+\end{itemize}
+
+\begin{Astuce}
+Les codes des encadrés \og listing \fg{} sont les vrais fichiers du dossier
+\texttt{scripts/}. Tu peux les exécuter avec, par exemple :
+\begin{center}\ttfamily uv run python scripts/knn\_david.py\end{center}
+Et l'application du projet avec : \ttfamily uv run streamlit run projet/app.py
+\end{Astuce}
+
+\begin{Resume}[: les 4 idées clés]
+\textbf{1.} Le Data Mining transforme des \emph{données} en \emph{connaissances} pour
+\emph{décider}.\quad
+\textbf{2.} Quatre tâches : \emph{classification}, \emph{prédiction}, \emph{association},
+\emph{segmentation}.\quad
+\textbf{3.} \emph{Supervisé} (classe connue) vs \emph{non supervisé} (classe inconnue).\quad
+\textbf{4.} 60\,\% du travail = \emph{préparer les données}.
+\end{Resume}
+
+% ============================ CHAPITRES ============================
+\input{chap1}
+\input{chap2}
+\input{chap4}
+\input{chap5}
+\input{tp}
+\input{projet}
+
+\end{document}

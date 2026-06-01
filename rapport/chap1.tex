@@ -1,0 +1,129 @@
+\chapter{Introduction au Data Mining}
+
+\section{Pourquoi le Data Mining ? (motivations)}
+
+\begin{Exemple}[le banquier]
+Un client demande un crédit. Le banquier veut savoir \emph{s'il va rembourser}. Le client
+ne dira jamais \og je ne rembourserai pas \fg{}. Mais le banquier peut \textbf{inférer} le
+comportement futur du client à partir de la \textbf{base de données des anciens clients}.
+\textbf{C'est exactement ça le Data Mining} : utiliser le passé (les données) pour prédire/
+comprendre le futur.
+\end{Exemple}
+
+On vit une \textbf{explosion des données} : bases de données, entrepôts, capteurs,
+web, e-commerce, hôpitaux, supermarchés… On produit des téraoctets chaque jour, mais
+\textbf{seule une infime partie est analysée}. D'où le besoin d'outils capables d'extraire la
+\emph{connaissance} cachée dans ces montagnes de données.
+
+\begin{Astuce}
+Phrase à retenir du cours : \og \emph{Nous sommes inondés de données, et il nous manque les
+connaissances contenues dans ces données.} \fg{}
+\end{Astuce}
+
+\section{Qu'est-ce que le Data Mining ?}
+
+\subsection{Trois types de requêtes}
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{Opérationnelle} (base de données / SQL) : \emph{\og Combien de bouteilles de
+        vin vendues au 1\textsuperscript{er} trimestre 2010 à la boutique EREVAN ? \fg{}}
+  \item \textbf{Analytique} (entrepôt / OLAP) : \emph{\og ventes par département, par marque,
+        par trimestre sur 5 ans \fg{}} — agrégation à différents niveaux.
+  \item \textbf{Exploratoire} (Data Mining) : \emph{\og Peut-on \textbf{prédire} qu'un client
+        va acheter du vin ? Quels produits achète-t-on \textbf{souvent avec} le vin ? \fg{}}
+        — impossible en SQL.
+\end{itemize}
+
+\begin{Definition}[Data Mining]
+\textbf{Ensemble de méthodes et techniques d'analyse de données et d'extraction
+d'informations structurées en vue d'aider à la prise de décision.}
+Le \og produit \fg{} du Data Mining, ce sont des \textbf{modèles} (les connaissances).
+\[ \boxed{\text{Données (information)} \;\xrightarrow{\;\text{Data Mining}\;}\; \text{Modèles (connaissances)}} \]
+Historique : \textbf{KDD} (1989, \emph{Knowledge Discovery in Databases}), puis le terme
+\textbf{Data Mining} en 1991.
+\end{Definition}
+
+\begin{Attention}[: ce que le Data Mining n'est PAS]
+Ce n'est ni un entrepôt de données, ni du SQL, ni de l'OLAP, ni de la simple visualisation,
+ni de la statistique descriptive, et surtout \textbf{pas une boule de cristal} : il
+\emph{extrapole} à partir de données existantes, il ne devine pas magiquement.
+\end{Attention}
+
+\section{Les tâches du Data Mining}
+
+C'est \textbf{le tableau le plus important du chapitre}. Tout le reste du cours détaille ces
+tâches.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{>{\bfseries}l p{6.2cm} l c}
+\toprule
+Tâche & Objectif & Méthodes & Apprentissage\\
+\midrule
+Classification & Attribuer une \emph{classe connue} à un objet (crédit oui/non) &
+  Arbres, K-NN, réseaux de neurones, Bayes & supervisé\\
+Prédiction & Estimer une \emph{valeur future} d'un attribut &
+  Arbres, réseaux de neurones & supervisé\\
+Association & Trouver les attributs \emph{corrélés} (panier : poisson \& vin) &
+  Apriori, FP-Growth & non supervisé\\
+Segmentation & Former des \emph{groupes homogènes} (classes inconnues) &
+  K-means, K-NN, réseaux de neurones & non supervisé\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{Definition}[Supervisé vs non supervisé]
+\textbf{Supervisé} : l'apprenant reçoit des exemples avec \emph{entrée ET sortie} (la classe
+est connue) $\rightarrow$ classification, prédiction.\\
+\textbf{Non supervisé} : seulement des \emph{entrées}, pas de classe $\rightarrow$ association,
+segmentation.
+\end{Definition}
+
+On distingue aussi les \textbf{modèles prédictifs} (extrapolent une info nouvelle :
+classification, prédiction) et les \textbf{modèles descriptifs} (mettent en évidence une info
+noyée : segmentation, association).
+
+\section{Le processus CRISP-DM}
+
+\textbf{CRISP-DM} (\emph{Cross Industry Standard Process for Data Mining}) est la
+méthodologie la plus utilisée. Elle découpe un projet en \textbf{6 phases}, dans un cycle
+où l'on fait des \og aller-retour \fg{}.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{c >{\bfseries}l p{9.5cm}}
+\toprule
+\# & Phase & En quoi ça consiste\\
+\midrule
+1 & Compréhension du métier & Objectifs de l'entreprise $\rightarrow$ problème de data mining.\\
+2 & Compréhension des données & Recueillir, explorer, évaluer la qualité.\\
+3 & Préparation des données & Nettoyer, sélectionner, transformer (\textbf{$\approx$60\,\% du temps}).\\
+4 & Modélisation & Choisir les algorithmes et calibrer leurs paramètres.\\
+5 & Évaluation & Les résultats répondent-ils aux objectifs ?\\
+6 & Déploiement & Mettre en œuvre les décisions (côté maître d'ouvrage).\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{Exemple}[étude de cas Daimler-Chrysler]
+Objectif : \textbf{analyser les plaintes clients} dans l'automobile (réduire les coûts,
+améliorer la satisfaction). Les chercheurs ont suivi CRISP-DM : compréhension métier
+(\og y a-t-il un lien entre plaintes ? \fg{}), exploration du système QUIS (7~millions de
+véhicules, 40~Go), préparation \textbf{très longue} (formats incompatibles), modélisation
+(réseaux bayésiens + règles d'association), évaluation \textbf{décevante} (modèles peu
+fiables à cause de la structure de la base), déploiement limité à un projet pilote. \textbf{Leçon :
+ne jamais sous-estimer la préparation des données.}
+\end{Exemple}
+
+\section{Outils et sources de données}
+Logiciels phares (sondages KDnuggets) : \textbf{RapidMiner}, \textbf{R}, \textbf{Excel},
+\textbf{Weka}, \textbf{Python} (numpy/pandas/scikit-learn), SAS, KNIME… Dépôts de données
+pour s'entraîner : \textbf{UCI} (\texttt{archive.ics.uci.edu}), \textbf{Kaggle},
+\textbf{Hugging Face}.
+
+\begin{Resume}
+Le Data Mining = extraire des \textbf{modèles} décisionnels des données. 4 tâches
+(classification, prédiction, association, segmentation), 2 régimes (supervisé / non
+supervisé), 1 méthodologie reine (\textbf{CRISP-DM}, 6 phases) où la \textbf{préparation des
+données} domine. Les chapitres suivants détaillent : la préparation (chap.~2), la
+classification (chap.~4) et la segmentation (chap.~5).
+\end{Resume}

@@ -1,0 +1,16 @@
+[project]
+name = "datamining"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "matplotlib>=3.10.9",
+    "memo>=0.2.4",
+    "nicegui>=3.12.1",
+    "pandas>=3.0.3",
+    "scikit-learn>=1.8.0",
+    "streamlit>=1.57.0",
+    "tqdm>=4.67.3",
+    "ucimlrepo>=0.0.7",
+]

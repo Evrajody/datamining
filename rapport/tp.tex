@@ -1,0 +1,60 @@
+\chapter{TP \og CLASSIFICATION \fg{} — corrigé complet}
+
+Ce TP (document scanné) demande de \textbf{dessiner deux arbres de décision} et de
+\textbf{vérifier avec WEKA et PYTHON}. Les deux exercices reprennent exactement les jeux de
+données traités au chapitre~4 ; on en redonne ici la résolution condensée et la procédure de
+vérification.
+
+\section{Exercice 1 — Indice de Gini}
+\begin{center}\small
+\begin{tabular}{cccc}
+\toprule
+ID & Âge & Type\_voit & Risque\\
+\midrule
+0 & 23 & Familiale & Élevé\\ 1 & 17 & Sport & Élevé\\ 2 & 43 & Sport & Élevé\\
+3 & 68 & Familiale & Faible\\ 4 & 32 & Camion & Faible\\ 5 & 20 & Familiale & Élevé\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Résolution} (détaillée au \S4.2.1) : $GINI(\text{racine})=0{,}444$. Les deux meilleurs
+premiers découpages (Type\_voit et Âge $<27{,}5$) sont à égalité ($GINI_{\text{split}}=0{,}222$) ;
+scikit-learn retient \textbf{Âge $<27{,}5$}, puis \textbf{Type\_voit} sépare parfaitement.
+
+\begin{Exemple}[arbre attendu]
+\texttt{Âge < 27,5 ?} $\rightarrow$ OUI : \textbf{Élevé} ; NON : \texttt{Type\_voit} $\rightarrow$ Sport=\textbf{Élevé},
+Familiale=\textbf{Faible}, Camion=\textbf{Faible}. \\
+\textbf{Script :} \texttt{uv run python scripts/gini\_arbre.py} (figure \texttt{gini\_arbre.png}).
+\end{Exemple}
+
+\section{Exercice 2 — Gain d'information}
+Jeu \og achat d'ordinateur \fg{} (14 lignes, \S4.2.2) : $Entropie(S)=0{,}940$. Gains :
+$\text{Âge}=0{,}246$ (max), Étudiant $=0{,}151$, État\_civil $=0{,}048$, Revenue $=0{,}029$.
+
+\begin{Exemple}[arbre attendu]
+\texttt{Âge ?} $\rightarrow$ $\le30$ : \texttt{Étudiant} (oui=oui, non=non) ; $31..40$ : \textbf{oui} ;
+$>40$ : \texttt{État\_civil} (célibataire=oui, marié=non).\\
+\textbf{Script :} \texttt{uv run python scripts/gain\_information.py} (figure
+\texttt{gain\_information\_arbre.png}).
+\end{Exemple}
+
+\section{Vérification sous WEKA}
+\begin{enumerate}[leftmargin=1.6em,nosep]
+  \item Enregistrer le tableau au format \texttt{.arff} ou \texttt{.csv}.
+  \item \emph{Explorer} $\rightarrow$ onglet \emph{Classify}.
+  \item Choisir \texttt{trees > J48} (implémentation de C4.5, $\approx$ gain d'information) ou
+        \texttt{trees > SimpleCart} (indice de Gini).
+  \item \emph{Test options} : \og Use training set \fg{} (jeux minuscules) puis lancer.
+  \item Lire l'arbre dans la sortie texte et le comparer à celui de Python — \textbf{ils
+        coïncident} (même attribut racine, mêmes feuilles).
+\end{enumerate}
+
+\begin{Astuce}
+WEKA J48 utilise le \emph{gain ratio} (C4.5) : sur ces petits jeux, le résultat est identique
+à l'arbre par gain d'information ci-dessus. Pour Gini, utiliser SimpleCart/CART.
+\end{Astuce}
+
+\begin{Resume}
+Les deux arbres du TP sont exactement ceux du chapitre~4. Python (scikit-learn) et WEKA
+(J48 / SimpleCart) reconstruisent les mêmes structures, ce qui valide la résolution manuelle.
+\end{Resume}

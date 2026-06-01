@@ -1,0 +1,123 @@
+% ====================================================================
+% PRÉAMBULE — moteur XeLaTeX (tectonic)
+% ====================================================================
+\usepackage{fontspec}
+% police principale = Latin Modern par défaut de fontspec (pas besoin de la nommer)
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}[Scale=0.85]
+
+\usepackage{polyglossia}
+\setdefaultlanguage{french}
+% guillemets français (non fournis par polyglossia)
+\providecommand{\og}{«\,}
+\providecommand{\fg}{\,»}
+
+\usepackage{geometry}
+\geometry{a4paper,margin=2.3cm,headheight=15pt}
+
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+
+\usepackage[table]{xcolor}
+% --- palette ---
+\definecolor{bleu}{HTML}{2C3E72}
+\definecolor{bleuclair}{HTML}{4C72B0}
+\definecolor{vert}{HTML}{2E7D32}
+\definecolor{vertclair}{HTML}{E8F5E9}
+\definecolor{rouge}{HTML}{C0392B}
+\definecolor{rougeclair}{HTML}{FDEDEC}
+\definecolor{orange}{HTML}{E67E22}
+\definecolor{orangeclair}{HTML}{FEF5E7}
+\definecolor{violet}{HTML}{6C3483}
+\definecolor{violetclair}{HTML}{F4ECF7}
+\definecolor{gristresclair}{HTML}{F5F5F5}
+\definecolor{griscode}{HTML}{2B2B2B}
+
+% --- code Python ---
+\usepackage{listings}
+\definecolor{cmt}{HTML}{6A9955}
+\definecolor{kw}{HTML}{569CD6}
+\definecolor{str}{HTML}{CE9178}
+\definecolor{num}{HTML}{B5CEA8}
+\lstdefinestyle{py}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{kw}\bfseries,
+  commentstyle=\color{cmt}\itshape,
+  stringstyle=\color{str},
+  numberstyle=\tiny\color{gray},
+  numbers=left,numbersep=7pt,
+  backgroundcolor=\color{gristresclair},
+  frame=leftline,framerule=2pt,rulecolor=\color{bleuclair},
+  breaklines=true,breakatwhitespace=true,
+  showstringspaces=false,
+  tabsize=4,
+  upquote=true,
+  columns=fullflexible,keepspaces=true,
+  literate=%
+    {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\¨e}}1
+    {à}{{\`a}}1 {â}{{\^a}}1 {î}{{\^i}}1 {ï}{{\¨i}}1
+    {ô}{{\^o}}1 {ö}{{\¨o}}1 {û}{{\^u}}1 {ù}{{\`u}}1 {ç}{{\c c}}1
+    {œ}{{\oe}}1 {Œ}{{\OE}}1 {’}{{'}}1
+    {É}{{\'E}}1 {È}{{\`E}}1 {Ê}{{\^E}}1 {À}{{\`A}}1
+    {≤}{{$\leq$}}1 {≥}{{$\geq$}}1 {²}{{$^2$}}1 {→}{{$\rightarrow$}}1
+    {≈}{{$\approx$}}1 {μ}{{$\mu$}}1 {≠}{{$\neq$}}1 {∈}{{$\in$}}1
+    {├}{{|}}1 {└}{{|}}1 {─}{{-}}1 {│}{{|}}1 {’}{{'}}1 {«}{{<<}}1 {»}{{>>}}1
+}
+\lstset{style=py}
+
+% --- boîtes colorées (tcolorbox) ---
+\usepackage[most]{tcolorbox}
+\tcbset{
+  boxedstyle/.style={
+    enhanced,breakable,boxrule=0pt,
+    leftrule=3pt,arc=2pt,left=8pt,right=8pt,top=6pt,bottom=6pt,
+    fonttitle=\bfseries,coltitle=white,
+  }
+}
+\newtcolorbox{Definition}[1][]{boxedstyle,colback=violetclair,colframe=violet,
+  title={\faIcon~Définition #1}}
+\newtcolorbox{Exemple}[1][]{boxedstyle,colback=vertclair,colframe=vert,
+  title={Exemple — #1}}
+\newtcolorbox{Calcul}[1][]{boxedstyle,colback=gristresclair,colframe=bleuclair,
+  title={Calcul détaillé #1}}
+\newtcolorbox{Astuce}[1][]{boxedstyle,colback=orangeclair,colframe=orange,
+  title={Astuce / À retenir #1}}
+\newtcolorbox{Attention}[1][]{boxedstyle,colback=rougeclair,colframe=rouge,
+  title={Attention #1}}
+\newtcolorbox{Resume}[1][]{boxedstyle,colback=vertclair,colframe=vert,
+  title={En résumé #1}}
+
+% remplace \faIcon si fontawesome absent
+\providecommand{\faIcon}[1]{}
+
+% --- titres & en-têtes ---
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{bleu}}
+  {\filright\Large\color{bleuclair}Chapitre~\thechapter}{8pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-20pt}{20pt}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{bleu}\leftmark}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,linkcolor=bleu,urlcolor=bleuclair,
+  citecolor=vert,pdftitle={Cours de Data Mining — Explications complètes},
+  pdfauthor={Master 2 IG/ID — ENEAM/UAC}
+}
+
+% --- commandes pratiques ---
+\newcommand{\gini}{\textit{Gini}}
+\newcommand{\R}{\mathbb{R}}

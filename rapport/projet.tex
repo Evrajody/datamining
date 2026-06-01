@@ -1,0 +1,81 @@
+\chapter{Le projet de Data Mining — application Streamlit}
+
+\section{Le sujet}
+\begin{Definition}[Cahier des charges]
+Concevoir une \textbf{application graphique} (Java ou Python) exécutant les \textbf{3 tâches}
+de Data Mining : \textbf{segmentation}, \textbf{classification}, \textbf{recherche
+d'associations}. Fonctionnalités exigées :
+\begin{enumerate}[nosep,leftmargin=1.6em]
+  \item choisir la tâche ; \item renseigner le chemin du dataset ; \item choisir l'algorithme ;
+  \item lancer l'analyse ; \item afficher les résultats ;
+  \item un algorithme au choix par tâche ; \item présenter les \textbf{mesures de performance} ;
+  \item \textbf{comparer avec WEKA}.
+\end{enumerate}
+Datasets suggérés : \emph{cereals} (segmentation), \emph{customer churn / ionosphere}
+(classification), \emph{customer churn} (associations).
+\end{Definition}
+
+\section{Architecture de la solution}
+On a choisi \textbf{Python + Streamlit} (interface web instantanée, idéale pour un \emph{dashboard}
+de data mining). Deux fichiers :
+\begin{itemize}[leftmargin=1.4em,nosep]
+  \item \texttt{projet/apriori.py} — l'algorithme \textbf{Apriori} codé à la main (support,
+        confiance, lift) ;
+  \item \texttt{projet/app.py} — l'application : barre latérale (choix tâche + source des
+        données), puis une page par tâche.
+\end{itemize}
+
+\begin{Astuce}[: lancer l'application]
+\begin{center}\ttfamily uv run streamlit run projet/app.py\end{center}
+Sans fichier, l'app utilise des \textbf{jeux de démonstration} intégrés (type
+\emph{cereals}, \emph{churn}, paniers de supermarché). On peut aussi \textbf{importer un CSV}.
+\end{Astuce}
+
+\section{Les 3 tâches dans l'application}
+
+\paragraph{1) Segmentation.} Algorithmes \textbf{K-means} et \textbf{Agglomératif}
+(hiérarchique). L'utilisateur choisit les variables, $K$, et la normalisation (z-score).
+Sorties : \textbf{silhouette} et \textbf{inertie intra-cluster} (mesures de performance),
+projection 2D (PCA) colorée par cluster, tailles des clusters, export CSV.
+\emph{WEKA :} \texttt{Cluster $\rightarrow$ SimpleKMeans}, comparer le \emph{within-cluster
+sum of squared errors} (= inertie).
+
+\paragraph{2) Classification.} Algorithmes \textbf{Arbre de décision}, \textbf{K-NN}
+(avec standardisation automatique), \textbf{Forêt aléatoire}. Découpage
+apprentissage/test paramétrable. Sorties : \textbf{exactitude, précision, rappel, F1}
+(\S4.4), \textbf{matrice de confusion}, tracé de l'arbre ou importance des variables.
+\emph{WEKA :} \texttt{Classify $\rightarrow$ J48 / IBk / RandomForest}, comparer l'accuracy.
+
+\paragraph{3) Recherche d'associations.} Algorithme \textbf{Apriori} (maison). Deux formats :
+colonne \og panier \fg{} (articles séparés par des virgules) ou tableau catégoriel
+(\texttt{colonne=valeur}). Réglages : \textbf{support} et \textbf{confiance} minimaux. Sorties :
+table des règles $X\to Y$ avec \textbf{support, confiance, lift}, top règles, export CSV.
+\emph{WEKA :} \texttt{Associate $\rightarrow$ Apriori}, mêmes seuils.
+
+\section{Mesures de performance \& comparaison WEKA}
+\begin{center}\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{>{\bfseries}l p{5.4cm} p{5.4cm}}
+\toprule
+Tâche & Mesures dans l'app & Équivalent WEKA\\
+\midrule
+Segmentation & Silhouette, inertie intra & SimpleKMeans (SSE)\\
+Classification & Exactitude, précision, rappel, F1, matrice de confusion & J48 / IBk / RandomForest\\
+Associations & Support, confiance, lift & Apriori (lift)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Code — algorithme Apriori (maison)}
+\lstinputlisting[caption={projet/apriori.py},label=lst:apriori]{../projet/apriori.py}
+
+\section{Code — application Streamlit}
+\lstinputlisting[caption={projet/app.py},label=lst:app]{../projet/app.py}
+
+\begin{Resume}
+L'application Streamlit couvre les \textbf{8 fonctionnalités} du sujet pour les
+\textbf{3 tâches}. Chaque tâche propose plusieurs algorithmes, affiche les
+\textbf{mesures de performance} adaptées et indique l'équivalent \textbf{WEKA} pour la
+comparaison. Apriori est implémenté \og à la main \fg{} pour bien montrer le calcul du
+support, de la confiance et du lift.
+\end{Resume}
