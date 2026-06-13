@@ -5,13 +5,31 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.15.0",
     "customtkinter>=5.2.2",
+    "facebook-graphql-scraper>=1.1.5",
+    "facebook-scraper>=0.2.59",
+    "lxml>=6.1.1",
     "matplotlib>=3.10.9",
     "memo>=0.2.4",
     "nicegui>=3.12.1",
     "pandas>=3.0.3",
+    "playwright>=1.60.0",
+    "requests>=2.34.2",
     "scikit-learn>=1.8.0",
     "streamlit>=1.57.0",
+    "torch>=2.12.0",
     "tqdm>=4.67.3",
+    "transformers>=5.11.0",
     "ucimlrepo>=0.0.7",
 ]
+
+# --- torch en build CPU (le build CUDA par défaut fait 1,2 Go et son import
+#     sonde le GPU, ce qui le rend très lent sur une machine sans CUDA) ---
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }

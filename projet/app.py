@@ -185,12 +185,43 @@ if tache == "Segmentation":
     df = charger(demo_segmentation)
     st.dataframe(df.head(), width="stretch")
 
+    from sklearn.ensemble import IsolationForest
+
     num_cols = df.select_dtypes("number").columns.tolist()
     cols = st.multiselect("Variables numériques à utiliser", num_cols, default=num_cols)
     c1, c2, c3 = st.columns(3)
     algo = c1.selectbox("Algorithme", ["K-means", "Agglomératif (hiérarchique)"])
-    k = c2.slider("Nombre de clusters K", 2, 8, 3)
+    
     normaliser = c3.checkbox("Normaliser (z-score)", value=True)
+
+    # Après avoir défini cols et normaliser, et avant le bouton "Lancer"
+    if cols:
+        X_preview = df[cols].to_numpy()
+        if normaliser:
+            X_preview = StandardScaler().fit_transform(X_preview)
+
+        @st.cache_data
+        def meilleur_k(data_hash, X_np):
+            scores = {}
+            for ki in range(2, 9):
+                labels = KMeans(n_clusters=ki, n_init=10, random_state=0).fit_predict(X_np)
+                scores[ki] = silhouette_score(X_np, labels)
+            return max(scores, key=scores.get), scores
+
+        import hashlib
+        data_hash = hashlib.md5(
+             pd.util.hash_pandas_object(df[cols]).values.tobytes()
+             + str(normaliser).encode()
+             + str(sorted(cols)).encode()
+        ).hexdigest()
+        k_opt, scores_sil = meilleur_k(data_hash, X_preview)
+
+        with st.expander("Silhouette par nombre de clusters", icon=":material/analytics:"):
+            st.bar_chart(pd.Series(scores_sil, name="Silhouette").rename_axis("k"))
+            st.caption(f"Meilleur k détecté automatiquement : **{k_opt}** "
+                    f"(silhouette = {scores_sil[k_opt]:.3f})")
+
+        k = c2.slider("Nombre de clusters K", 2, 8, value=k_opt)
 
     if st.button("Lancer la segmentation", type="primary",
                  icon=":material/play_arrow:", width="stretch") and cols:
@@ -202,6 +233,7 @@ if tache == "Segmentation":
             model = KMeans(n_clusters=k, n_init=10, random_state=0)
         else:
             model = AgglomerativeClustering(n_clusters=k)
+
         labels = model.fit_predict(X)
 
         # --- mesures de performance ---
@@ -232,11 +264,35 @@ if tache == "Segmentation":
         st.dataframe(res, width="stretch")
         telecharger(res, "segmentation_resultats.csv")
 
-        st.info("**Comparaison WEKA** : *Cluster → SimpleKMeans* (mêmes K et "
-                "normalisation). WEKA affiche le `Within cluster sum of squared errors` "
-                "(= inertie) ; il doit être du même ordre de grandeur.",
-                icon=":material/science:")
+        st.divider()
+        st.subheader(":material/science: Comparaison avec WEKA")
 
+        col_app, col_weka = st.columns(2)
+
+        with col_app:
+            st.markdown("**Résultats — cette application**")
+            
+            # Répartition clusters
+            tailles = pd.Series(labels).value_counts().sort_index()
+            total = len(labels)
+            rows = []
+            for cluster_id, count in tailles.items():
+                nom = f"Outliers" if cluster_id == -1 else f"Cluster {cluster_id}"
+                rows.append({
+                    "Cluster": nom,
+                    "Instances": count,
+                    "Pourcentage": f"{count/total*100:.0f}%"
+                })
+            st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
+            
+            st.metric("Silhouette", f"{sil:.3f}")
+            if algo == "K-means":
+                st.metric("Inertie (Within-cluster SS)", f"{model.inertia_:.1f}")
+            
+
+        
+
+       
     st.info("*Astuce du cours :* normaliser avant un clustering (les distances "
             "dépendent des échelles). Choisir K via la **silhouette** ou la méthode du "
             "**coude**.", icon=":material/lightbulb:")
@@ -252,7 +308,14 @@ elif tache == "Classification":
 
     cible = st.selectbox("Variable cible (la classe à prédire)", df.columns,
                          index=len(df.columns) - 1)
-    feats = [c for c in df.columns if c != cible]
+    feats = st.multiselect(
+        "Colonnes à utiliser comme features",
+        [c for c in df.columns if c != cible],
+        default=[c for c in df.columns if c != cible],
+    )
+    if not feats:
+        st.warning("Sélectionne au moins une colonne.", icon=":material/warning:")
+        st.stop()
     c1, c2, c3 = st.columns(3)
     algo = c1.selectbox("Algorithme",
                         ["Arbre de décision", "K plus proches voisins", "Forêt aléatoire"])
@@ -334,6 +397,7 @@ elif tache == "Classification":
 
 
 # ==========================================================================
+# # ==========================================================================
 # 3) RECHERCHE D'ASSOCIATIONS
 # ==========================================================================
 else:
@@ -351,13 +415,14 @@ else:
         defaut = "panier" if "panier" in df.columns else df.columns[0]
         col_panier = st.selectbox("Colonne contenant les paniers", df.columns,
                                   index=list(df.columns).index(defaut))
-    c1, c2 = st.columns(2)
-    min_sup = c1.slider("Support minimum", 0.05, 1.0, 0.3, step=0.05)
-    min_conf = c2.slider("Confiance minimum", 0.1, 1.0, 0.6, step=0.05)
+
+    c1, c2, c3 = st.columns(3)
+    min_sup  = c1.slider("Support minimum",   0.05, 1.0, 0.3,  step=0.05)
+    min_conf = c2.slider("Confiance minimum", 0.1,  1.0, 0.6,  step=0.05)
+    min_lift = c3.slider("Lift minimum",      1.0,  5.0, 1.0,  step=0.1)
 
     if st.button("Extraire les règles", type="primary",
                  icon=":material/play_arrow:", width="stretch"):
-        # construire la liste de transactions
         if mode.startswith("Colonne"):
             transactions = [set(str(v).split(",")) for v in df[col_panier].dropna()]
         else:
@@ -367,17 +432,21 @@ else:
             ]
 
         regles = regles_association(transactions, min_sup, min_conf)
+
+        # Filtrage par lift minimum
+        regles = [r for r in regles if r["lift"] >= min_lift]
+
         st.metric("Nombre de règles trouvées", len(regles))
 
         if regles:
             tab = pd.DataFrame(
                 [
                     {
-                        "Si (antécédent)": ", ".join(sorted(r["antecedent"])),
+                        "Si (antécédent)"  : ", ".join(sorted(r["antecedent"])),
                         "Alors (conséquent)": ", ".join(sorted(r["consequent"])),
-                        "Support": r["support"],
-                        "Confiance": r["confidence"],
-                        "Lift": r["lift"],
+                        "Support"          : r["support"],
+                        "Confiance"        : r["confidence"],
+                        "Lift"             : r["lift"],
                     }
                     for r in regles
                 ]
@@ -390,7 +459,7 @@ else:
             top["règle"] = top["Si (antécédent)"] + " → " + top["Alors (conséquent)"]
             st.bar_chart(top.set_index("règle")["Confiance"])
         else:
-            st.warning("Aucune règle : baisse le support ou la confiance minimum.",
+            st.warning("Aucune règle : baisse le support, la confiance ou le lift minimum.",
                        icon=":material/warning:")
 
         st.info("**Comparaison WEKA** : *Associate → Apriori*. Régler "

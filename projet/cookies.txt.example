@@ -1,0 +1,11 @@
+# Netscape HTTP Cookie File
+# Format : 7 champs SEPARES PAR DES TABULATIONS (\t), pas des espaces.
+# domaine               sousdom  chemin  secure  expiration   nom      valeur
+# Remplace les VALEURS ci-dessous par celles de TON compte connecte.
+# Les cookies INDISPENSABLES pour facebook_scraper sont : c_user et xs.
+# Renomme ensuite ce fichier en cookies.txt
+.facebook.com	TRUE	/	TRUE	1788000000	c_user	100012345678901
+.facebook.com	TRUE	/	TRUE	1788000000	xs	42%3AAbCdEfGhIjKl%3A2%3A1700000000%3A-1%3A1234
+.facebook.com	TRUE	/	TRUE	1788000000	datr	AbCdEfGhIjKlMnOpQrStUv
+.facebook.com	TRUE	/	TRUE	1788000000	sb	AbCdEfGhIjKlMnOpQrStUv
+.facebook.com	TRUE	/	TRUE	1788000000	fr	0aBcDeFgHiJkLmNoP.AbCdEf.AbCdEf.AbC.0.0.AbCdEf.AbC

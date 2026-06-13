@@ -51,7 +51,9 @@ def main():
         for x in C:
             d1, d2 = abs(x - m1), abs(x - m2)
             choix = "C1" if d1 <= d2 else "C2"
-            print(f"   x={x:2d} : |{x}-{m1}|={d1:5.2f}  |{x}-{m2}|={d2:5.2f}  -> {choix}")
+            print(
+                f"   x={x:2d} : |{x}-{m1}|={d1:5.2f}  |{x}-{m2}|={d2:5.2f}  -> {choix}"
+            )
         print(f"   C1 = {g1}  -> nouvelle moyenne = {n1:.3f}")
         print(f"   C2 = {g2}  -> nouvelle moyenne = {n2:.3f}")
 
@@ -95,8 +97,12 @@ def main():
     for x in C:
         col = "#4C72B0" if x in g1 else "#C44E52"
         ax2.scatter(x, 0, s=180, color=col, zorder=3)
-        ax2.annotate(str(x), (x, 0), textcoords="offset points", xytext=(0, 10), ha="center")
-    ax2.scatter([n1, n2], [0, 0], marker="X", s=260, color="black", zorder=4, label="centres")
+        ax2.annotate(
+            str(x), (x, 0), textcoords="offset points", xytext=(0, 10), ha="center"
+        )
+    ax2.scatter(
+        [n1, n2], [0, 0], marker="X", s=260, color="black", zorder=4, label="centres"
+    )
     ax2.set_yticks([])
     ax2.set_title("Partition finale : C1 (bleu) vs C2 (rouge)")
     ax2.legend()

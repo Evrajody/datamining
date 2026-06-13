@@ -1,0 +1,25 @@
+[
+  {
+    "post_id": null,
+    "username": null,
+    "user_id": null,
+    "text": "Nouveau projet terminé : Analyse de Sentiment & Détection de Désinformation sur le Changement Climatique\nJ'ai réalisé un projet de Data Mining sur 9 050 tweets autour du changement climatique, couvrant la période de janvier à juillet 2022.\nRésultats clés :… En voir plus",
+    "post_text": "Nouveau projet terminé : Analyse de Sentiment & Détection de Désinformation sur le Changement Climatique\nJ'ai réalisé un projet de Data Mining sur 9 050 tweets autour du changement climatique, couvrant la période de janvier à juillet 2022.\nRésultats clés :… En voir plus",
+    "time": "14 avril",
+    "likes": 14,
+    "comments": null,
+    "shares": null,
+    "reactions": null,
+    "image": "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/670331585_948608544240787_6846879470582097628_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1197&ctp=s590x590&_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_ohc=LX2jyT_AYpQQ7kNvwFf1ejg&_nc_oc=AdrZVqOEFj9xzj74_xy1QQzJ0QdrVFyaID2F0Xu7fFkvnyPCZ_JP6k-pUeZqXRtJvEw&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af8iXIZqHrJzhB6Ange89ioLYw10fJhPa_YCy0zeZOmKhg&oe=6A2F5096",
+    "images": [
+      "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/670331585_948608544240787_6846879470582097628_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1197&ctp=s590x590&_nc_cat=101&ccb=1-7&_nc_sid=833d8c&_nc_ohc=LX2jyT_AYpQQ7kNvwFf1ejg&_nc_oc=AdrZVqOEFj9xzj74_xy1QQzJ0QdrVFyaID2F0Xu7fFkvnyPCZ_JP6k-pUeZqXRtJvEw&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af8iXIZqHrJzhB6Ange89ioLYw10fJhPa_YCy0zeZOmKhg&oe=6A2F5096",
+      "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/670885908_948608487574126_91314804835646532_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1242&ctp=s590x590&_nc_cat=110&ccb=1-7&_nc_sid=833d8c&_nc_ohc=J5Z4dqcnQnQQ7kNvwELJUVU&_nc_oc=AdqskE4aU4kwrobxszZDr5sSx8R8RxQJijdpKBw1FPn30eCkp8hlxz1FzyYC1mZi5JA&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af_O-cPEytAIf1NQSGha7BJgi0SCQAQ0h3_cfcHtj9C4FA&oe=6A2F5405",
+      "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/671149152_948608540907454_8736699221686364102_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x1196&ctp=s590x590&_nc_cat=104&ccb=1-7&_nc_sid=833d8c&_nc_ohc=nf7Dh7qr5DMQ7kNvwGBTpPD&_nc_oc=AdqJG-pJLRNtoZqWWRsIcPbrd8fSYLS7ltudjCKicLCeG41gxOPb5WT0gNfd45HH7HU&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af_dCvicEDgikNlIMwqsd1SkiWds0ry_Q93oG6ngMZ5gpw&oe=6A2F2CDB",
+      "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/671610554_948608464240795_564052304329055628_n.jpg?stp=dst-jpg_tt6&cstp=mx980x826&ctp=s590x590&_nc_cat=105&ccb=1-7&_nc_sid=833d8c&_nc_ohc=UNy9RpBQ5hUQ7kNvwFIn_gV&_nc_oc=AdrOAkP3GNnFXfT6IsgSmruFMi4ySHOFE3lw5dHGdUSNgEsexGHM2xof8rx6RVyxiAY&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af-_HrXBEzMijPSPHVWeJ_bOY-d9nWkKmq8Cz-vhO3K1MQ&oe=6A2F2B03",
+      "https://scontent.fcoo4-1.fna.fbcdn.net/v/t39.30808-6/671637718_948608537574121_7963877145183329619_n.jpg?stp=dst-jpg_tt6&cstp=mx1600x850&ctp=s590x590&_nc_cat=107&ccb=1-7&_nc_sid=833d8c&_nc_ohc=_DFgdcvAJVkQ7kNvwEB8dQe&_nc_oc=AdoxZc57GHciR7M3MDnUMUiQjjufspYgIaAzd_cWVIl_FFejYpOXiwc8b4Pb7_0-leY&_nc_zt=23&_nc_ht=scontent.fcoo4-1.fna&_nc_gid=aviuO4YCP3ozYe0SvdluqQ&_nc_ss=79289&oh=00_Af-zDOAXdgDnuWMIQ5HIe4n3cpUmXv2UUpNN6TPBJPbrew&oe=6A2F242F"
+    ],
+    "link": null,
+    "post_url": "https://www.facebook.com/permalink.php",
+    "available": true
+  }
+]

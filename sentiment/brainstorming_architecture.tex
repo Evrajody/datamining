@@ -1,0 +1,388 @@
+% =====================================================================
+%  Document de BRAINSTORMING - Architecture du systeme d'analyse de
+%  sentiments (Projet d'application en Data Mining - ENEAM/UAC)
+%  Compilation : tectonic brainstorming_architecture.tex
+%  Police : Arial (rendue via Liberation Sans, metriquement identique)
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont{Liberation Sans}   % equivalent metrique exact d'Arial
+\setmonofont{Liberation Mono}
+\usepackage[french]{babel}
+
+\usepackage{geometry}
+\geometry{margin=2.2cm}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+\tcbset{after={\par\normalcolor\medskip}}   % securite : evite la fuite de couleur (xetex)
+\usepackage{hyperref}
+
+% --- Couleurs ---
+\definecolor{bleu}{RGB}{20,70,130}
+\definecolor{bleuclair}{RGB}{232,240,250}
+\definecolor{vert}{RGB}{30,120,70}
+\definecolor{vertclair}{RGB}{232,246,238}
+\definecolor{orange}{RGB}{200,110,20}
+\definecolor{orangeclair}{RGB}{253,243,230}
+\definecolor{gris}{RGB}{90,90,90}
+
+\hypersetup{colorlinks=true, linkcolor=bleu, urlcolor=bleu, citecolor=bleu}
+
+% --- Titres ---
+\titleformat{\section}{\Large\bfseries\color{bleu}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\large\bfseries\color{bleu!80!black}}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.6em}
+
+% --- En-tete / pied ---
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\footnotesize\color{gris}\itshape Analyse de sentiments -- Brainstorming}
+\fancyhead[R]{\footnotesize\color{gris}ENEAM/UAC -- M2 ID}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Boites ---
+\newtcolorbox{decision}{colback=bleuclair,colframe=bleu,boxrule=0.6pt,arc=2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm,
+  fonttitle=\bfseries,title=Décision de conception}
+\newtcolorbox{repere}{colback=vertclair,colframe=vert,boxrule=0.6pt,arc=2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm,
+  fonttitle=\bfseries,title=Exigence du cahier des charges}
+\newtcolorbox{alerte}{colback=orangeclair,colframe=orange,boxrule=0.6pt,arc=2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm,
+  fonttitle=\bfseries,title=Point de vigilance}
+
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+% =====================================================================
+\begin{document}
+
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+{\color{bleu}\rule{\linewidth}{1.2pt}}\\[0.6cm]
+{\Huge\bfseries Système d'analyse de sentiments\\ et d'opinions en français}\\[0.4cm]
+{\Large Document de brainstorming -- Architecture complète}\\[0.3cm]
+{\large\itshape Projet d'application en Data Mining}\\[0.2cm]
+{\color{bleu}\rule{\linewidth}{1.2pt}}\\[1.2cm]
+
+\begin{tabular}{rl}
+\textbf{UFR} & ENEAM / UAC\\
+\textbf{Niveau} & Master 2 -- Informatique Décisionnelle\\
+\textbf{Année} & 2025--2026\\
+\textbf{Système retenu} & Analyse de sentiments et d'opinions\\
+\textbf{Langue cible} & Français\\
+\end{tabular}
+
+\vfill
+{\color{gris}\small Document de travail -- conception et choix d'architecture}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section{Compréhension et recadrage du sujet}
+
+Le cahier des charges demande de \textbf{concevoir une application graphique}
+(Python ou Java) pour l'un des deux systèmes de data mining proposés. Nous
+retenons le \textbf{système d'analyse de sentiments et d'opinions}.
+
+\begin{repere}
+L'application doit pouvoir analyser \textbf{trois types d'entrées} :
+\textbf{(1)} des \emph{phrases isolées}, \textbf{(2)} des \emph{textes / documents},
+\textbf{(3)} des \emph{données en provenance des réseaux sociaux} --- le tout
+\textbf{en français}. Elle doit s'appuyer sur les \textbf{deux grandes approches}
+citées : l'approche \textbf{Machine Learning} et l'approche \textbf{lexicale}.
+\end{repere}
+
+C'est le point structurant : le projet n'est \emph{pas} un simple pipeline de
+collecte de tweets, mais une \textbf{application interactive} dont le moteur
+combine deux familles de méthodes, avec une finalité d'\textbf{aide à la
+décision} (recherche marketing, supervision des réseaux sociaux, prise de
+décision), exactement comme l'énumère le sujet.
+
+\subsection{Reformulation des objectifs}
+\begin{itemize}[leftmargin=1.2cm,nosep]
+  \item Classer un contenu français en \textbf{positif / neutre / négatif}
+        (et, en option, détecter l'\emph{émotion} et les \emph{aspects}).
+  \item Offrir une \textbf{interface graphique} couvrant les 3 modes d'entrée.
+  \item Implémenter et \textbf{comparer} l'approche lexicale et l'approche ML,
+        puis sélectionner le modèle \textbf{optimal} sur des métriques objectives.
+  \item Produire des \textbf{visualisations décisionnelles} (distribution,
+        tendances, termes saillants) et un export exploitable.
+\end{itemize}
+
+% =====================================================================
+\section{Vue d'ensemble de l'architecture}
+
+L'application est organisée en couches faiblement couplées. Le \emph{moteur de
+sentiment} est le c\oe ur ; l'interface et les sources ne sont que des
+adaptateurs autour de lui.
+
+{\scriptsize
+\begin{verbatim}
+ +---------------------------------------------------------------+
+ |                 INTERFACE GRAPHIQUE (Streamlit)               |
+ |   [Onglet 1] Phrase   [Onglet 2] Texte/Fichier   [Onglet 3]  |
+ |                                            Reseaux sociaux    |
+ +-------------------------------+-------------------------------+
+                                 |
+                      +----------v-----------+
+                      |  COUCHE D'ENTREE     |  phrase | fichier | collecte
+                      |  (adaptateurs)       |
+                      +----------+-----------+
+                                 |
+                      +----------v-----------+
+                      |  PRETRAITEMENT FR    |  nettoyage, negation,
+                      |  (NLP francais)      |  emojis, tokenisation
+                      +----------+-----------+
+                                 |
+            +--------------------+--------------------+
+            |          MOTEUR DE SENTIMENT           |
+            |  (A) Approche LEXICALE   (B) Approche ML|
+            |   lexique FR + regles    classique +    |
+            |                          transformers   |
+            +--------------------+--------------------+
+                                 |
+                      +----------v-----------+
+                      |  EVALUATION & CHOIX  |  metriques, modele optimal
+                      +----------+-----------+
+                                 |
+                      +----------v-----------+
+                      |  RESTITUTION /       |  graphes, tendances,
+                      |  AIDE A LA DECISION  |  export CSV/PDF
+                      +----------------------+
+\end{verbatim}}
+
+% =====================================================================
+\section{Couche 1 -- Interface graphique}
+
+\begin{decision}
+\textbf{Streamlit} comme interface principale (web, Python pur, déjà présent
+dans l'environnement \code{datamining}). Alternatives possibles :
+\textbf{NiceGUI} (web, plus riche) ou \textbf{CustomTkinter} (bureau natif).
+\end{decision}
+
+Trois onglets, alignés sur les trois modes exigés :
+\begin{enumerate}[leftmargin=1.2cm,nosep]
+  \item \textbf{Phrase isolée} : champ de saisie $\rightarrow$ polarité + score
+        + justification (mots déclencheurs surlignés).
+  \item \textbf{Texte / document} : import \code{.txt}, \code{.csv}, \code{.pdf}
+        $\rightarrow$ analyse phrase par phrase + synthèse agrégée.
+  \item \textbf{Réseaux sociaux} : collecte (scraper) \emph{ou} import d'un jeu
+        de données $\rightarrow$ analyse de masse, tendances, termes saillants.
+\end{enumerate}
+Un \textbf{sélecteur de moteur} (lexique / ML classique / transformer) permet de
+basculer entre les approches et de \textbf{comparer} les résultats en direct ---
+ce qui matérialise visuellement l'exigence du sujet.
+
+% =====================================================================
+\section{Couche 2 -- Prétraitement du français}
+
+Étape critique car la qualité de l'analyse en dépend.
+\begin{itemize}[leftmargin=1.2cm,nosep]
+  \item Normalisation : minuscules, URLs / mentions / hashtags, espaces.
+  \item \textbf{Emojis} : conversion en tokens de sentiment (porteurs forts).
+  \item \textbf{Négation} : marquage (\og ne\dots pas \fg{}) car elle inverse la
+        polarité --- indispensable en français.
+  \item \textbf{Intensifieurs} (\og très \fg{}, \og vraiment \fg{}) et atténuateurs.
+  \item Tokenisation / lemmatisation : \textbf{spaCy} (\code{fr\_core\_news\_md})
+        ou NLTK.
+\end{itemize}
+
+% =====================================================================
+\section{Couche 3 -- Moteur de sentiment (le c\oe ur du projet)}
+
+Le sujet impose les \textbf{deux approches}. Nous les implémentons toutes les
+deux, ce qui permet une \textbf{comparaison} et donne sa valeur scientifique au
+rapport.
+
+\subsection{(A) Approche lexicale}
+\begin{itemize}[leftmargin=1.2cm,nosep]
+  \item Ressource : un \textbf{lexique de sentiments français} ---
+        \textbf{FEEL} (French Expanded Emotion Lexicon), \textbf{Polarimots},
+        ou un portage de \textbf{VADER} pour le français.
+  \item Calcul : score = somme pondérée des polarités des termes, \textbf{modulé}
+        par la négation, les intensifieurs et les emojis.
+  \item Atouts : \textbf{zéro entraînement}, totalement \textbf{explicable}
+        (on montre les mots qui ont compté). Sert de \textbf{baseline}.
+  \item Limite : faible sur l'ironie, le contexte, le vocabulaire nouveau.
+\end{itemize}
+
+\subsection{(B) Approche Machine Learning}
+Deux niveaux, du plus \og data mining classique \fg{} au plus performant.
+
+\paragraph{B.1 -- ML classique (c\oe ur \og data mining \fg{}).}
+Vectorisation \textbf{TF-IDF / sac-de-mots} puis classifieurs :
+\textbf{Naïve Bayes multinomial}, \textbf{SVM linéaire}, \textbf{Régression
+logistique}, \textbf{Random Forest} (et \textbf{XGBoost} en option). C'est la
+partie qui mobilise directement les techniques du cours (apprentissage
+supervisé, évaluation, sélection de modèle).
+
+\paragraph{B.2 -- Transformers (état de l'art français).}
+\textbf{CamemBERT} (ou \textbf{DistilCamemBERT}, plus léger) \textbf{fine-tuné}
+sur un corpus de sentiment français, via la librairie \textbf{Hugging Face
+Transformers} (\code{Trainer}). Meilleure précision, gère mieux le contexte.
+
+\begin{decision}
+\textbf{Volet \og innovation \fg{} (facultatif mais valorisant) :} fine-tuning
+d'un \textbf{petit LLM français} (type Mistral / Llama instruct) avec
+\textbf{Unsloth} en \textbf{QLoRA 4-bit}. Unsloth divise par $\approx$2 le temps
+d'entraînement et l'empreinte mémoire --- adapté à un GPU modeste. Intérêt :
+au-delà de la classe, le LLM peut produire une \textbf{justification} et extraire
+les \textbf{aspects} (\og le service est lent mais le produit est bon \fg{}).
+\end{decision}
+
+\subsection{Synthèse comparative des approches}
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{>{\bfseries}l c c X}
+\toprule
+Approche & Entraînement & Explicabilité & Performance attendue (FR) \\
+\midrule
+Lexicale (FEEL) & Aucun & Très forte & Moyenne (baseline) \\
+ML classique TF-IDF & Léger & Forte & Bonne \\
+CamemBERT fine-tuné & Moyen (GPU) & Faible & Très bonne \\
+LLM + Unsloth (QLoRA) & Lourd (GPU) & Moyenne (justifié) & Très bonne + aspects \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% =====================================================================
+\section{Couche 4 -- Données, entraînement et choix du modèle optimal}
+
+\subsection{Jeux de données français}
+\begin{itemize}[leftmargin=1.2cm,nosep]
+  \item \textbf{Allociné} : critiques de films (polarité binaire) -- grand, propre.
+  \item \textbf{Avis / tweets français annotés} (Hugging Face Hub : \code{tblard/allocine},
+        corpus de tweets FR, etc.).
+  \item \textbf{Corpus maison} : quelques centaines de messages annotés à la main
+        (positif/neutre/négatif) pour évaluer sur \emph{ton} domaine réel.
+\end{itemize}
+
+\subsection{Protocole de sélection (le \og modèle optimal \fg{})}
+\begin{enumerate}[leftmargin=1.2cm,nosep]
+  \item Découpage \textbf{train / validation / test} + \textbf{validation croisée}.
+  \item Métriques : \textbf{exactitude}, \textbf{précision}, \textbf{rappel},
+        \textbf{F1-macro}, \textbf{matrice de confusion}.
+  \item \textbf{Comparaison} : lexique vs ML classique vs CamemBERT (vs LLM).
+  \item Le meilleur F1-macro sur le jeu de test = \textbf{modèle retenu} en
+        production dans l'application.
+\end{enumerate}
+\begin{repere}
+C'est cette démarche comparative et chiffrée qui constitue le \og data mining \fg{}
+attendu : on ne choisit pas un modèle au hasard, on \textbf{démontre} son
+optimalité.
+\end{repere}
+
+\subsection{Outils d'entraînement}
+\code{scikit-learn} (ML classique), \code{Hugging Face Transformers}~+~\code{PyTorch}
+(CamemBERT), \code{Unsloth}~+~\code{PEFT/QLoRA} (LLM). Suivi des expériences :
+\code{matplotlib} pour les courbes, export des métriques en CSV.
+
+% =====================================================================
+\section{Le mode \og réseaux sociaux \fg{} : réalité et stratégie}
+
+\begin{alerte}
+En 2026, le \textbf{scraping de Facebook déconnecté est bloqué} : \code{mbasic}
+renvoie une erreur HTTP~400. Toute collecte réelle exige une \textbf{session
+authentifiée} (donc hors CGU), ou une \textbf{API tierce payante}.
+\end{alerte}
+
+Stratégie pragmatique pour ne \textbf{jamais} dépendre du scraping le jour de la
+soutenance :
+\begin{enumerate}[leftmargin=1.2cm,nosep]
+  \item \textbf{Dataset de secours} (recommandé) : un corpus de tweets / avis FR
+        déjà collecté, chargé dans le mode \og réseaux sociaux \fg{}. La démo
+        fonctionne à coup sûr.
+  \item \textbf{Scraper (apprentissage)} : module \code{scraper\_fb.py} déjà en
+        place (\code{sentiment/}). Fonctionne avec un \textbf{compte dédié} +
+        cookie de session, ou via \textbf{Playwright} pour le contenu dynamique.
+        À présenter avec ses limites et le cadrage \textbf{RGPD} (Pages publiques
+        seulement, anonymisation par hachage, faible débit).
+  \item \textbf{Option robuste} : API tierce (Apify) si un petit budget existe.
+\end{enumerate}
+
+% =====================================================================
+\section{Pile technique et organisation du projet}
+
+\subsection{Pile}
+Python 3.12 (\code{uv}) ; \code{scikit-learn}, \code{pandas}, \code{spaCy}/\code{nltk} ;
+\code{transformers}~+~\code{torch} ; \code{unsloth} (option) ; \code{streamlit} ;
+\code{matplotlib}/\code{plotly}, \code{wordcloud} ; \code{requests}/
+\code{beautifulsoup4}/\code{playwright} (collecte).
+
+\subsection{Arborescence cible}
+{\scriptsize
+\begin{verbatim}
+datamining/sentiment/
+  app.py                  # interface Streamlit (3 onglets)
+  pretraitement.py        # nettoyage FR, negation, emojis
+  moteur_lexical.py       # approche lexicale (FEEL)
+  moteur_ml.py            # TF-IDF + classifieurs sklearn
+  moteur_transformer.py   # CamemBERT (Hugging Face)
+  entrainement/           # scripts d'entrainement + benchmark
+  scraper_fb.py           # collecte reseaux sociaux (deja present)
+  data/                   # datasets FR + corpus maison annote
+  modeles/                # modeles entraines sauvegardes
+  resultats/              # metriques, matrices de confusion
+\end{verbatim}}
+
+% =====================================================================
+\section{Plan de réalisation (jalons)}
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{c >{\bfseries}l X}
+\toprule
+\# & Jalon & Contenu \\
+\midrule
+1 & Prétraitement + lexique & Baseline explicable qui tourne de bout en bout \\
+2 & ML classique & TF-IDF + classifieurs, dataset FR, premier benchmark \\
+3 & CamemBERT & Fine-tuning Hugging Face, comparaison \\
+4 & (option) LLM + Unsloth & QLoRA, justification + aspects \\
+5 & Interface Streamlit & Les 3 modes + sélecteur de moteur \\
+6 & Mode réseaux sociaux & Dataset de secours + scraper + RGPD \\
+7 & Évaluation + rapport & Modèle optimal, visualisations, rédaction \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+% =====================================================================
+\section{Risques et limites à documenter}
+\begin{itemize}[leftmargin=1.2cm,nosep]
+  \item \textbf{Ironie / sarcasme} : difficiles pour tous les modèles ; à mesurer.
+  \item \textbf{Ressources FR} limitées vs anglais : lexiques et corpus plus rares.
+  \item \textbf{RGPD} : données personnelles $\rightarrow$ anonymisation, base légale,
+        Pages publiques uniquement.
+  \item \textbf{Dépendance au scraping} : neutralisée par le dataset de secours.
+  \item \textbf{Échantillon non représentatif} : à nuancer dans l'interprétation.
+\end{itemize}
+
+% =====================================================================
+\section{Synthèse des décisions}
+\begin{enumerate}[leftmargin=1.2cm,nosep]
+  \item Système : \textbf{analyse de sentiments FR}, application \textbf{Streamlit}.
+  \item \textbf{3 modes d'entrée} (phrase / texte / réseaux sociaux) conformes au sujet.
+  \item \textbf{2 approches} implémentées et comparées : \textbf{lexicale} et \textbf{ML}
+        (classique + CamemBERT), avec option \textbf{LLM + Unsloth}.
+  \item Modèle \textbf{optimal} choisi par \textbf{benchmark chiffré} (F1-macro).
+  \item Mode réseaux sociaux sécurisé par un \textbf{dataset de secours} + scraper cadré RGPD.
+  \item Finalité : \textbf{aide à la décision} (visualisations, export).
+\end{enumerate}
+
+\vfill
+\begin{center}\color{gris}\small
+Document de brainstorming -- base de discussion pour la conception détaillée.
+\end{center}
+
+\end{document}
